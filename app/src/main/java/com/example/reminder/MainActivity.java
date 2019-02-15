@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Menu;
@@ -63,6 +64,54 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        /*
+
+Add a touch helper to the RecyclerView to recognize when a user swipes to delete a list entry.
+
+An ItemTouchHelper enables touch behavior (like swipe and move) on each ViewHolder,
+
+and uses callbacks to signal when a user is performing these actions.
+
+*/
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
+
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+                    @Override
+
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+
+                        return false;
+
+                    }
+
+
+                    //Called when a user swipes left or right on a ViewHolder
+
+                    @Override
+
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+
+
+                        //Get the index corresponding to the selected position
+
+                        int position = (viewHolder.getAdapterPosition());
+
+                        mReminders.remove(position);
+
+                        mAdapter.notifyItemRemoved(position);
+
+                    }
+
+                };
+
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+
     }
 
     private void updateUI() {
